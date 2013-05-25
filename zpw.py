@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import math
 
 from random import randint
 from gameobjects.vector2 import Vector2
@@ -18,17 +19,19 @@ class Character(object):
         font=pygame.font.SysFont("courier new",16,True)
         nameTxt=font.render(self.name,True,(0,0,0))
         levelTxt=font.render("level is "+str(self.level),True,(0,0,0))
-        expTxt=font.render("exp is " +str(self.exp),True,(0,0,0))
+        expTxt=font.render("exp is " +str(self.exp-2**self.level),True,(0,0,0))
         surface.blit(nameTxt,LOCATION)
         surface.blit(levelTxt,(LOCATION[0],LOCATION[1]+TXT_HEIGHT))
         surface.blit(expTxt,(LOCATION[0],LOCATION[1]+TXT_HEIGHT*2))
         
     def addExp(self,num):
         self.exp+=num
-        if(self.exp>100):
-            self.exp-=100
-            self.level+=1
+        for i in xrange(100):
+            if self.exp < 2**i:
+                self.level=i-1
+                break
         
+                
 def run():
     pygame.init()    
     screen = pygame.display.set_mode(SCREEN_SIZE, 0,32)
