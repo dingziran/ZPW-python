@@ -20,6 +20,7 @@ ZPW-python
 
 第一版游戏代码采用python和pygame来开发，python是个很火的语言，可以用于很多领域，一些类似函数式语言的性质，使得它也是个很高级的语言，并且是c和c++开发游戏之外语言的最好选择了，而且机器学习和人工智能在python的库也很多。最近读了一本pygame开发游戏的书，于是就立马使用pygame来上手。	
 
+![github](https://github.com/dingziran/ZPW-python/blob/master/version1.0.0.jpg) 
 
 
 
