@@ -2,11 +2,27 @@ import pygame
 from pygame.locals import *
 import math
 
+try:
+    import cPickle as pickle
+except:
+    import pickle
+    
+import sys
+
 from random import randint
 from gameobjects.vector2 import Vector2
 SCREEN_SIZE=(640,480)
 LOCATION=(0,0)
 TXT_HEIGHT=20
+
+class Localize(object):
+    def __init__(self,character,monster,combatSys):
+        self.char=character
+        self.mons=monster
+        self.comb=combatSys
+        
+    def setChar(self,character):
+        f=open("character.dat","")
 
 class CombatSys(object):
     def __init__(self,char,monster):
@@ -113,12 +129,31 @@ def run():
     screen = pygame.display.set_mode(SCREEN_SIZE, 0,32)
     clock=pygame.time.Clock()
     round=0
-    char=Character("Dingziran")
-    mon=Monster("Goblin",10,1,1,1,1)
-    combat=CombatSys(char,mon)
+    if len(sys.argv)!=1:
+        filename= sys.argv[1]
+        with open(filename, 'rb') as in_s:
+            try:
+                #char = pickle.load(in_s)
+                #mon = pickle.load(in_s)
+                print "Read data from file"
+                combat=pickle.load(in_s)
+                char=combat.char
+                mon=combat.mons
+            except EOFError:
+                pass
+            else:
+                pass#print 'READ: %s (%s)' % (o.name, o.name_backwards)
+    else:
+        char=Character("Dingziran")
+        mon=Monster("Goblin",10,1,1,1,1)
+        combat=CombatSys(char,mon)
     while True:
         for event in pygame.event.get():
             if event.type ==QUIT:
+                with open(filename,'wb') as out_s:
+                    #pickle.dump(char,out_s)
+                    #pickle.dump(mon,out_s)
+                    pickle.dump(combat,out_s)
                 return
         time_passed=clock.tick(30)
         screen.fill((255, 255, 255))
@@ -126,7 +161,7 @@ def run():
             round=0    
             combat.combat()
         char.render(screen)
-        combat.render(screen)
+        #combat.render(screen)
         combat.renderRate(screen)
         pygame.display.update()
         mon.spawn()
