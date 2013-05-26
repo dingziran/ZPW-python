@@ -142,6 +142,9 @@ def run():
             char=Character("Dingziran")
             mon=Monster("Goblin",10,1,1,1,1)
             combat=CombatSys(char,mon)
+        finally:
+            if in_s:
+                in_s.close()
     else:
         char=Character("Dingziran")
         mon=Monster("Goblin",10,1,1,1,1)
