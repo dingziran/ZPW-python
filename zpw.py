@@ -15,23 +15,14 @@ SCREEN_SIZE=(640,480)
 LOCATION=(0,0)
 TXT_HEIGHT=20
 
-class Localize(object):
-    def __init__(self,character,monster,combatSys):
-        self.char=character
-        self.mons=monster
-        self.comb=combatSys
-        
-    def setChar(self,character):
-        f=open("character.dat","")
-
 class CombatSys(object):
     def __init__(self,char,monster):
         self.round=1
         self.battle=[]
         self.char=char
         self.mons=monster
-        self.total=1
-        self.win=1
+        self.total=0
+        self.win=0
     
     def combat(self):
         charRoll=self.char.getRoll()
@@ -57,7 +48,10 @@ class CombatSys(object):
               
     def renderRate(self,surface):
         font=pygame.font.SysFont("courier new",16,True)
-        rate=(self.win+0.0)/self.total
+        try:
+            rate=(self.win+0.0)/self.total
+        except ZeroDivisionError, e:
+            rate=0
         txt=font.render("The winner rate is %.2f, TotalTime is %d, WinTime is %d" % (rate , self.total , self.win),True,(0,0,0))
         surface.blit(txt,(LOCATION[0],SCREEN_SIZE[1]-TXT_HEIGHT))   
            
@@ -131,18 +125,23 @@ def run():
     round=0
     if len(sys.argv)!=1:
         filename= sys.argv[1]
-        with open(filename, 'rb') as in_s:
-            try:
-                #char = pickle.load(in_s)
-                #mon = pickle.load(in_s)
-                print "Read data from file"
-                combat=pickle.load(in_s)
-                char=combat.char
-                mon=combat.mons
-            except EOFError:
-                pass
-            else:
-                pass#print 'READ: %s (%s)' % (o.name, o.name_backwards)
+        try:
+            with open(filename, 'rb') as in_s:
+                try:
+                    #char = pickle.load(in_s)
+                    #mon = pickle.load(in_s)
+                    print "Read data from file"
+                    combat=pickle.load(in_s)
+                    char=combat.char
+                    mon=combat.mons
+                except EOFError:
+                    pass
+                else:
+                    pass#print 'READ: %s (%s)' % (o.name, o.name_backwards)
+        except IOError:
+            char=Character("Dingziran")
+            mon=Monster("Goblin",10,1,1,1,1)
+            combat=CombatSys(char,mon)
     else:
         char=Character("Dingziran")
         mon=Monster("Goblin",10,1,1,1,1)
