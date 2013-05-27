@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import math
 
+from time import clock
 try:
     import cPickle as pickle
 except:
@@ -14,6 +15,7 @@ from gameobjects.vector2 import Vector2
 SCREEN_SIZE=(640,480)
 LOCATION=(0,0)
 TXT_HEIGHT=20
+
 
 class CombatSys(object):
     def __init__(self,char,monster):
@@ -160,7 +162,7 @@ def run():
         time_passed=clock.tick(30)
         screen.fill((255, 255, 255))
         if round==3:
-            round=0    
+            round=0
             combat.combat()
         char.render(screen)
         #combat.render(screen)
@@ -168,9 +170,38 @@ def run():
         pygame.display.update()
         mon.spawn()
         round+=1
-        
+
+def timeit():
+    filename='test.dat'
+    try:
+        with open(filename, 'rb') as in_s:
+            try:
+                print "Read data from file"
+                combat=pickle.load(in_s)
+                char=combat.char
+                mon=combat.mons
+            except EOFError:
+                pass
+            else:
+                pass#print 'READ: %s (%s)' % (o.name, o.name_backwards)
+    except IOError:
+        char=Character("Dingziran")
+        mon=Monster("Goblin",10,1,1,1,1)
+        combat=CombatSys(char,mon)
+    finally:
+        if in_s:
+            in_s.close()
+    n=10000
+    t=clock()
+    for _ in xrange(n):
+        combat.combat()
+        mon.spawn()
+    t=clock()-t
+    print '%ds combat using %f second'%(n,t)
 if __name__ == "__main__":
 
     run()
+    #timeit()
+        
         
             
