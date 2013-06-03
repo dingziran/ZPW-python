@@ -21,7 +21,6 @@ LOCATION=(0,0)
 TXT_HEIGHT=20
 
 
-
 class CombatSys(object):
     def __init__(self,char,monster):
         self.round=1
@@ -32,6 +31,7 @@ class CombatSys(object):
         self.win=0
         self.chooseEqTxt=''
         self.monsType=1
+        self.tmp=0
     
     def combat(self):
         charDamage,charShield=self.char.getRoll()
@@ -169,18 +169,21 @@ def createMons(n):
            
 def chooseMons(combat,surface):
     pressed = pygame.key.get_pressed()
-    if pressed[K_LEFT]:
-        if combat.monsType>1:
-            combat.monsType-=1
-            combat.mons=createMons(combat.monsType)
-            combat.total=0
-            combat.win=0
-    if pressed[K_RIGHT]:
-        if combat.monsType<2:
-            combat.monsType+=1
-            combat.mons=createMons(combat.monsType)
-            combat.total=0
-            combat.win=0
+    combat.tmp+=1
+    if combat.tmp>10:
+        combat.tmp=0
+        if pressed[K_LEFT]:
+            if combat.monsType>1:
+                combat.monsType-=1
+                combat.mons=createMons(combat.monsType)
+                combat.total=0
+                combat.win=0
+        if pressed[K_RIGHT]:
+            if combat.monsType<7:
+                combat.monsType+=1
+                combat.mons=createMons(combat.monsType)
+                combat.total=0
+                combat.win=0
     txt=combat.chooseEqTxt
     if pressed[K_1]:
         txt=combat.char.useGold(1)
